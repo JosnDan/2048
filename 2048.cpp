@@ -1,3 +1,14 @@
+#include<iostream.h>
+#include<conio.h>
+#include<stdio.h>
+#include<ctype.h>
+#include<graphics.h>
+#include<string.h>
+#include<dos.h>
+#include<fstream.h>
+#include<stdlib.h>
+#define BGI "c:\\turboc3\\bgi"
+
 class Element;
 class Board;
 
@@ -166,168 +177,168 @@ public:
       for (int j = 0; j < tcol; j++)
       {
         if(!isFree(i,j))
-           base[i][j]->disp();
+         base[i][j]->disp();
+     }
+   }
+ }
+ ~Board()
+ {
+  for(int i=0;i<trow;i++)
+  {
+    for(int j=0;j<tcol;j++)
+    {
+      delete base[i][j];
+    }
+    delete base[i];
+  }
+  delete base;
+}
+int getValue(int row,int col)
+{
+  return base[row][col]->getValue();
+}
+void merge(int r1,int c1,int r2,int c2)
+{
+  base[r2][c2]->Double();
+  delete base[r1][c1];
+  base[r1][c1]=NULL;
+}
+int isFree(int row,int col)
+{
+  if (base[row][col]==NULL)
+  {
+    return 1;
+  }
+  return 0;
+}
+int createElement()
+{
+  int val=random(2)+1,flag=0;
+  val*=2;
+  for(int i=0;i<trow;i++)
+  {
+    for (int j = 0; j < tcol; ++j)
+    {
+      if(isFree(i,j))
+      {
+        flag=1;
+        base[i][j]=new Element(val,i,j,size);
+        break;
       }
     }
-  }
-  ~Board()
+    if(flag==1)
+     break;
+ }
+ return flag;
+}
+void swipeRight()
+{
+  int dum=-1;
+  for (int i = 0; i < trow; ++i)
   {
-    for(int i=0;i<trow;i++)
+    for(int j=tcol-1;j>=0;j--)
     {
-      for(int j=0;j<tcol;j++)
+      if(!isFree(i,j))
       {
-        delete base[i][j];
-      }
-      delete base[i];
-    }
-    delete base;
-  }
-  int getValue(int row,int col)
-  {
-    return base[row][col]->getValue();
-  }
-  void merge(int r1,int c1,int r2,int c2)
-  {
-    base[r2][c2]->Double();
-    delete base[r1][c1];
-    base[r1][c1]=NULL;
-  }
-  int isFree(int row,int col)
-  {
-    if (base[row][col]==NULL)
-    {
-      return 1;
-    }
-    return 0;
-  }
-  int createElement()
-  {
-    int val=random(2)+1,flag=0;
-    val*=2;
-    for(int i=0;i<trow;i++)
-    {
-      for (int j = 0; j < tcol; ++j)
-      {
-        if(isFree(i,j))
-        {
-          flag=1;
-          base[i][j]=new Element(val,i,j,size);
-          break;
-        }
-      }
-      if(flag==1)
-         break;
-    }
-    return flag;
-  }
-  void swipeRight()
-  {
-    int dum=-1;
-    for (int i = 0; i < trow; ++i)
-    {
-      for(int j=tcol-1;j>=0;j--)
-      {
-        if(!isFree(i,j))
-        {
-          dum=base[i][j]->fallRight();
+        dum=base[i][j]->fallRight();
 
-        }
       }
     }
   }
-  void swipeLeft()
+}
+void swipeLeft()
+{
+  for (int i = 0
+    ; i < trow; ++i)
   {
-    for (int i = 0
-      ; i < trow; ++i)
+    for(int j=0;j<tcol;j++)
     {
-      for(int j=0;j<tcol;j++)
+      if(!isFree(i,j))
       {
-        if(!isFree(i,j))
-        {
-          int c=base[i][j]->fallLeft();
-        }
+        int c=base[i][j]->fallLeft();
       }
     }
   }
-  void swipeDown()
+}
+void swipeDown()
+{
+  for (int i = 0; i < tcol; ++i)
   {
-    for (int i = 0; i < tcol; ++i)
+    for(int j=trow-1;j>=0;j--)
     {
-      for(int j=trow-1;j>=0;j--)
+      if(!isFree(j,i))
       {
-        if(!isFree(j,i))
-        {
-          int r=base[j][i]->fallDown();
-        }
+        int r=base[j][i]->fallDown();
       }
     }
   }
-  void swipeUp()
+}
+void swipeUp()
+{
+  for (int i = 0; i < tcol; ++i)
   {
-    for (int i = 0; i < tcol; ++i)
+    for(int j=0;j<trow;j++)
     {
-      for(int j=0;j<trow;j++)
+      if(!isFree(j,i))
       {
-        if(!isFree(j,i))
-        {
-          int r=base[j][i]->fallUp();
-        }
+        int r=base[j][i]->fallUp();
       }
     }
   }
-  
-  void move(int i,int j,int r,int c)
-  {
-    base[r][c]=base[i][j];
-    if(i!=r || j!=c)
-       base[i][j]=NULL;
-  }
-  void play()
-  {
-    int live=1;
-    char key='s';
-    text3D(233,220,6,GREEN,LIGHTGREEN,DEFAULT_FONT,4,"2046");
+}
 
-    char a[2];
-    for(int i=200; i<=440; i+=1)
-    {
-  setfillstyle(SOLID_FILL,LIGHTGRAY);
-  bar(200,280,i,290);
-  setcolor(WHITE);
-  settextstyle(0,HORIZ_DIR,1.5);
-  outtextxy(200,270,"Loading....");
-  delay(15);
-    }
-    setcolor(BLACK);
+void move(int i,int j,int r,int c)
+{
+  base[r][c]=base[i][j];
+  if(i!=r || j!=c)
+   base[i][j]=NULL;
+}
+void play()
+{
+  int live=1;
+  char key='s';
+  text3D(233,220,6,GREEN,LIGHTGREEN,DEFAULT_FONT,4,"2046");
+
+  char a[2];
+  for(int i=200; i<=440; i+=1)
+  {
+    setfillstyle(SOLID_FILL,LIGHTGRAY);
+    bar(200,280,i,290);
+    setcolor(WHITE);
     settextstyle(0,HORIZ_DIR,1.5);
     outtextxy(200,270,"Loading....");
-    setcolor(WHITE);
-    outtextxy(200,270,"GameLoaded");
-    delay(20);
-    do
-    {
-      live=createElement();
-      showBoard();
-      if(!live)
-        break;
-      key=getch();
-      switch(key)
-      {
-        case 'a': swipeLeft();
-              break;
-        case 'd': swipeRight();
-              break;
-        case 's': swipeDown();
-              break;
-        case 'w':  swipeUp();
-              break;
-      }
-      cleardevice();
-    }while(key!='e');
-    if(key=='e')
-      outtext("Thank You");
-    else
-      outtext("Game over");
-    getch();
+    delay(15);
   }
+  setcolor(BLACK);
+  settextstyle(0,HORIZ_DIR,1.5);
+  outtextxy(200,270,"Loading....");
+  setcolor(WHITE);
+  outtextxy(200,270,"GameLoaded");
+  delay(20);
+  do
+  {
+    live=createElement();
+    showBoard();
+    if(!live)
+      break;
+    key=getch();
+    switch(key)
+    {
+      case 'a': swipeLeft();
+      break;
+      case 'd': swipeRight();
+      break;
+      case 's': swipeDown();
+      break;
+      case 'w':  swipeUp();
+      break;
+    }
+    cleardevice();
+  }while(key!='e');
+  if(key=='e')
+    outtext("Thank You");
+  else
+    outtext("Game over");
+  getch();
+}
 };
