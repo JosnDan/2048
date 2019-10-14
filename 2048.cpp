@@ -342,3 +342,17 @@ void play()
   getch();
 }
 };
+
+
+void text3D(int x, int y, int depth, int bgcolor, int fgcolor,int font,int size, char *caption)
+{
+  int i;
+  setcolor(bgcolor);
+  settextstyle(font,HORIZ_DIR,size);
+  for(i=0; i<depth; i++)
+    outtextxy(x+i,y+i,caption);
+  setcolor(fgcolor);
+  outtextxy(x+i,y+i,caption);
+
+}
+
