@@ -4,8 +4,6 @@
 #include<ctype.h>
 #include<graphics.h>
 #include<string.h>
-#include<dos.h>
-#include<fstream.h>
 #include<stdlib.h>
 #define BGI "c:\\turboc3\\bgi"
 
